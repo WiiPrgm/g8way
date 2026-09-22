@@ -24,5 +24,7 @@ elif [[ -z "$title" ]]; then
     echo "$bank. Bank has been deleted, and unknown data detected on disc"
 else
     echo "$bank. $title"
-    date -u -d "@$magicdate" "+%Y-%m-%d %H:%M:%S"
+    date -u -d "@$magicdate" "+%B %-d, %Y"
+    date -u -d "@$magicdate" "+%H:%M:%S"
+    echo -e "\n"
 fi
