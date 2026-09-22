@@ -8,6 +8,7 @@ skipme=$((headoffset * bank))
 title=$(dd if="$1" bs=1 count=32 skip="$skipme" status=none | strings)
 dataskip=$((datastart + (banksize * bank)))
 lodgemagic=$(dd if="$1" bs=1 count=4 skip="$dataskip" status=none | xxd -p)
+datemagic=$(dd if="$1" bs=1 count=4 skip="$((skipme + 0x20))" status=none | xxd -p)  
 
 ((bank++))
 
@@ -20,5 +21,7 @@ elif [[ -z "$title" ]]; then
 else
     echo "$bank. $title"
 fi
+
+echo $datemagic
 
 done
