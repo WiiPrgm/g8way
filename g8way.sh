@@ -42,15 +42,34 @@ fi
 done
 }
 
+bankextract(){
+#syntax = gway -x gclnet.img bank#
 
+bank="$3"
+headerstart=0x00100000
+banksize=0x5747C000
+bankdatastart=0x00108000
+gcsize=0x57060000
+title=$(dd if="$2" bs=1 count=32 skip=$((($3 - 1) * 512)) status=none | strings)
+
+
+if [[ "$1" == "-x" ]]; then
+dataskip=$((headerstart + (banksize * (bank - 1))))
+dd if="$2" bs=1 skip="$dataskip" count=$((0x8000)) of="$bank"."$title"".header"
+else
+dataskip2=$((bankdatastart + (banksize * (bank -1))))
+dd if="$2" bs=1M skip="$dataskip2" count=$((gcsize)) iflag=skip_bytes,count_bytes of="${bank}.${title}.body" status=progress
+fi
+
+}
 
 
 case "$1" in
     list|-l|-la)
         numlist "$1" "$2"
         ;;
-    extract|-x)
-        bankextract "$2" "$3"
+    extract|-x|-xa)
+        bankextract "$1" "$2" "$3"
         ;;
     tplextract|-tpl)
         tplextract "$2" "$3"
@@ -59,9 +78,9 @@ case "$1" in
 	numlist "$2"
 	verbose=1
 	;;
-    extractall|-xa)
-	bankextractall "$2"
-	;;
+#    extractall|-xa)
+#	bankextractall "$2"
+#	;;
 
 	help|--h|-h)
 	echo This tool is for analyzing Gamecube Lodgenet HDD dumps.
