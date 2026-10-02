@@ -8,6 +8,9 @@ dev = usb.core.find(idVendor=0x1398, idProduct=0x000A)
 #Unlocks the drive (REQUIRED!)
 dev.ctrl_transfer(0xC0, 0x13, 0x87FB, 0xA207, 1)
 
+#Prints the console's serial number
+print(bytes(dev.ctrl_transfer(0xC0, 0x19, 0, 0, 16)).decode())
+
 #Asks the drive how many banks there are
 numbanks = dev.ctrl_transfer(0xC0, 0x11, 0, 0, 1)[0]
 
